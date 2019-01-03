@@ -1,0 +1,2 @@
+defmodule ResxJSON do
+end
