@@ -1,0 +1,8 @@
+%{
+  "callback": {:hex, :callback, "0.1.0", "899002515070a96a6a6dff582584c3745b8bf08a5803e777e43cf95aa174efa8", [:mix], [], "hexpm"},
+  "elixir_make": {:hex, :elixir_make, "0.4.2", "332c649d08c18bc1ecc73b1befc68c647136de4f340b548844efc796405743bf", [:mix], [], "hexpm"},
+  "jaxon": {:hex, :jaxon, "1.0.8", "ef2becb0761aeca60aaaebc7b8e7a5c19d405c5552ffdd4338fb392194fdaa68", [:make, :mix], [{:elixir_make, "~> 0.4", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
+  "mime": {:hex, :mime, "1.3.1", "30ce04ab3175b6ad0bdce0035cba77bba68b813d523d1aac73d9781b4d193cf8", [:mix], [], "hexpm"},
+  "path_match": {:hex, :path_match, "0.1.0", "7969b7de9ff1c9d8b35565e65c35b58d0bb2f56a28144266323b25c9ac420059", [:mix], [], "hexpm"},
+  "resx": {:hex, :resx, "0.0.3", "be5ed192ba1b50581491031f04b098e4b261739063007723966f6b8f11d8667f", [:mix], [{:callback, "~> 0.1.0", [hex: :callback, repo: "hexpm", optional: false]}, {:mime, "~> 1.3", [hex: :mime, repo: "hexpm", optional: false]}, {:path_match, "~> 0.1.0", [hex: :path_match, repo: "hexpm", optional: false]}], "hexpm"},
+}

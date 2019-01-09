@@ -18,6 +18,9 @@ defmodule ResxJSON.MixProject do
     end
 
     defp deps do
-        []
+        [
+            { :resx, "== 0.0.3" },
+            { :jaxon, "~> 1.0" }
+        ]
     end
 end
