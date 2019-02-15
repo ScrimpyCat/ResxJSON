@@ -22,4 +22,10 @@ defmodule ResxJSON.DecoderTest do
         assert [1, 2, "foo"] == (Resx.Resource.open!(~S(data:application/json,[{"a": 1}, {"a": 2}, {"a": "foo"}])) |> Resx.Resource.transform!(ResxJSON.Decoder, query: [:all, "a"])).content |> Resx.Resource.Content.data
         assert [2] == (Resx.Resource.open!(~S(data:application/json,[{"a": 1}, {"a": 2}, {"a": "foo"}])) |> Resx.Resource.transform!(ResxJSON.Decoder, query: [1, "a"])).content |> Resx.Resource.Content.data
     end
+
+    test "streams" do
+        resource = Resx.Resource.open!(~S(data:application/json,{}))
+        assert [2] == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~W([{"a": 1}, {"a": 2}, {"a": "foo"}]) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [1, "a"])).content |> Resx.Resource.Content.data
+        assert [2] == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~W([ { " a " : 1 } , { " a " : 2 } , { " a " : " f o o " } ]) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [1, "a"])).content |> Resx.Resource.Content.data
+    end
 end
