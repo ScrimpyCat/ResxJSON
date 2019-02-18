@@ -34,3 +34,9 @@ if Mix.env == :dev do
 
     config :ex_doc, :markdown_processor, ExDocSimpleMarkdown
 end
+
+if Mix.env == :test do
+    config :mime, :types, %{
+        "application/json-seq" => []
+    }
+end
