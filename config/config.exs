@@ -28,3 +28,9 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env()}.exs"
+
+if Mix.env == :dev do
+    import_config "simple_markdown_rules.exs"
+
+    config :ex_doc, :markdown_processor, ExDocSimpleMarkdown
+end
