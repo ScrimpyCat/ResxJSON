@@ -1,4 +1,46 @@
 defmodule ResxJSON.Decoder do
+    @moduledoc """
+      Decode JSON string resources into erlang terms.
+
+      ### Media Types
+
+      Only JSON types are valid. This can either be a JSON subtype or suffix.
+
+      Valid: `application/json`, `application/geo+json`, `application/json-seq`
+      If an error is being returned when attempting to open a data URI due to
+      `{ :invalid_reference, "invalid media type: \#{type}" }`, the MIME type
+      will need to be added to the config.
+
+      To add additional media types to be decoded, the can be done by configuring
+      the `:json_types` option.
+
+        config :resx_json,
+            json_types: [
+                { "application/x.my-type", "application/x.erlang.native", :json }
+            ]
+
+      The `:json_types` field should contain a list of 3 element tuples with the
+      format `{ pattern :: String.pattern | Regex.t, replacement :: String.t, decoder :: :json | :json_seq }`.
+
+      The `pattern` and `replacement` are arguments to `String.replace/3`. While the
+      decoder specifies the JSON decoder to be used. The current decoder are:
+
+      * `:json` - Decodes standard JSON using the `Jaxon` library (see `Jaxon.Stream.query/2`).
+      * `:json_seq` - Decodes [JSON text sequences](https://tools.ietf.org/html/rfc7464) using the `Jaxon` library (see `Jaxon.Stream.query/2`).
+
+      The replacement becomes the new media type of the transformed resource. Nested
+      media types will be preserved. By default the current matches will be replaced
+      (where the `json` type part is), with `x.erlang.native`, in order to denote
+      that the content is now a native erlang type. If this behaviour is not desired
+      simply override the match with `:json_types` for the media types that should
+      not be handled like this.
+
+      ### Query
+
+      A query can be performed in the transformation, to only return a resource with
+      the result of that query. The query format is either a string (`Jaxon.Path`) or
+      a regular query as expected by `Jaxon.Stream.query/2`.
+    """
     use Resx.Transformer
 
     alias Resx.Resource.Content
