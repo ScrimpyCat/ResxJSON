@@ -28,6 +28,9 @@ defmodule ResxJSON.DecoderTest do
             resource = Resx.Resource.open!(~S(data:application/json,{}))
             assert [2] == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~W([{"a": 1}, {"a": 2}, {"a": "foo"}]) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [1, "a"])).content |> Resx.Resource.Content.data
             assert [2] == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~W([ { " a " : 1 } , { " a " : 2 } , { " a " : " f o o " } ]) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [1, "a"])).content |> Resx.Resource.Content.data
+            assert %{ "a" => 2 } == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~W([ { " a " : 1 } , { " a " : 2 } , { " a " : " f o o " } ]) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [:all])).content |> Enum.at(1)
+            assert %{ "a" => "foo" } == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~W([ { " a " : 1 } , { " a " : 2 } , { " a " : " f o o " } ]) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [:all])).content |> Enum.at(-1)
+            assert nil == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~W([ { " a " : 1 } , { " a " : 2 } , { " a " : " f o o " } ]) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [:all])).content |> Enum.at(3)
         end
 
         test "path expression queries" do
@@ -48,6 +51,9 @@ defmodule ResxJSON.DecoderTest do
             resource = Resx.Resource.open!(~S(data:application/json-seq,{}))
             assert [2] == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~w(\x1e{"a": 1}\n \x1e{"a": 2}\n\x1e {"a": "foo"}\n) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [1, "a"])).content |> Resx.Resource.Content.data
             assert [2] == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~w(\x1e { " a " : 1 } \x1e\n { " a " : 2 } \x1e \n { " a " : " f o o " } \n) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [1, "a"])).content |> Resx.Resource.Content.data
+            assert %{ "a" => 2 } == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~w(\x1e { " a " : 1 } \x1e\n { " a " : 2 } \x1e \n { " a " : " f o o " } \n) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [:all])).content |> Enum.at(1)
+            assert %{ "a" => "foo" } == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~w(\x1e { " a " : 1 } \x1e\n { " a " : 2 } \x1e \n { " a " : " f o o " } \n) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [:all])).content |> Enum.at(-1)
+            assert nil == (%{ resource | content: %{ Resx.Resource.Content.Stream.new(resource.content) | data: ~w(\x1e { " a " : 1 } \x1e\n { " a " : 2 } \x1e \n { " a " : " f o o " } \n) } } |> Resx.Resource.transform!(ResxJSON.Decoder, query: [:all])).content |> Enum.at(3)
         end
 
         test "path expression queries" do
