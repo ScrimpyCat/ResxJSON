@@ -78,16 +78,16 @@ defmodule ResxJSON.Decoder do
         end
     end
 
-    defp convert_sequence_to_array(indexes, sequence, first, index \\ 0, parts \\ [])
-    defp convert_sequence_to_array([], sequence, _, _, _), do: sequence
-    defp convert_sequence_to_array([[{ start, 1 }]|indexes], sequence, false, index, parts) do
+    defp convert_sequence_to_array(indexes, sequence, first, index \\ 0)
+    defp convert_sequence_to_array([], sequence, _, _), do: sequence
+    defp convert_sequence_to_array([[{ start, 1 }]|indexes], sequence, false, index) do
         part_length = start - index
         case sequence do
             <<part :: binary-size(part_length), "\x1e", sequence :: binary>> -> [part, ","|convert_sequence_to_array(indexes, sequence, false, start + 1)]
             <<part :: binary-size(part_length), "\n", sequence :: binary>> -> [part|convert_sequence_to_array(indexes, sequence, false, start + 1)]
         end
     end
-    defp convert_sequence_to_array([[{ start, 1 }]|indexes], sequence, true, index, parts) do
+    defp convert_sequence_to_array([[{ start, 1 }]|indexes], sequence, true, index) do
         part_length = start - index
         case sequence do
             <<part :: binary-size(part_length), "\x1e", sequence :: binary>> -> [part|convert_sequence_to_array(indexes, sequence, false, start + 1)]
@@ -109,7 +109,7 @@ defmodule ResxJSON.Decoder do
     defp validate_type(_, []), do: nil
     defp validate_type(type_list = [type|types], [{ match, replacement, decoder }|matches]) do
         if type =~ match do
-            { [String.replace(type, match, "/\\3x.erlang.native\\4")|types], decoder }
+            { [String.replace(type, match, replacement)|types], decoder }
         else
             validate_type(type_list, matches)
         end
