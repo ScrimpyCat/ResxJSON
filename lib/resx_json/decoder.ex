@@ -40,6 +40,8 @@ defmodule ResxJSON.Decoder do
       A query can be performed in the transformation, to only return a resource with
       the result of that query. The query format is either a string (`Jaxon.Path`) or
       a regular query as expected by `Jaxon.Stream.query/2`.
+
+        Resx.Resource.transform(resource, ResxJSON.Decoder, query: "[*].foo")
     """
     use Resx.Transformer
 
