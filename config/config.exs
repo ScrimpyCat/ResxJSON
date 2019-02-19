@@ -37,6 +37,11 @@ end
 
 if Mix.env == :test do
     config :mime, :types, %{
-        "application/json-seq" => []
+        "application/json-seq" => [],
+        "application/geo+json-seq" => [],
+        "json/json" => [],
+        "json/json+json" => [],
+        "json/jsons" => [],
+        "json/json+jsons" => []
     }
 end

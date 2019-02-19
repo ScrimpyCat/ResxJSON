@@ -1,6 +1,21 @@
 defmodule ResxJSON.DecoderTest do
     use ExUnit.Case
 
+    test "media types" do
+        assert ["application/x.erlang.native"] == (Resx.Resource.open!(~S(data:application/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+        assert ["application/x.erlang.native"] == (Resx.Resource.open!(~S(data:application/json-seq,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+        assert ["application/geo+x.erlang.native"] == (Resx.Resource.open!(~S(data:application/geo+json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+        assert ["application/geo+x.erlang.native"] == (Resx.Resource.open!(~S(data:application/geo+json-seq,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+
+        assert ["json/x.erlang.native"] == (Resx.Resource.open!(~S(data:json/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+        assert ["json/x.erlang.native"] == (Resx.Resource.open!(~S(data:json/json+json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+        assert { :error, { :internal, "Invalid resource type" } } = (Resx.Resource.open!(~S(data:json/jsons,{})) |> Resx.Resource.transform(ResxJSON.Decoder))
+        assert { :error, { :internal, "Invalid resource type" } } == (Resx.Resource.open!(~S(data:json/json+jsons,{})) |> Resx.Resource.transform(ResxJSON.Decoder))
+
+        Application.put_env(:resx_json, :json_types, [{ "json/jsons", "foo", :json }])
+        assert ["foo"] == (Resx.Resource.open!(~S(data:json/jsons,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+    end
+
     describe "json" do
         test "queries" do
             assert [%{}] == (Resx.Resource.open!(~S(data:application/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content |> Resx.Resource.Content.data
