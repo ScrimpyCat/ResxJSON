@@ -12,6 +12,7 @@
   "nimble_parsec": {:hex, :nimble_parsec, "0.5.0", "90e2eca3d0266e5c53f8fbe0079694740b9c91b6747f2b7e3c5d21966bba8300", [:mix], [], "hexpm"},
   "parsey": {:hex, :parsey, "0.0.3", "0a736c0179886c533c97edb24e7ffe410077ef88d5d5db7313f4cd15fde4cf8f", [:mix], [], "hexpm"},
   "path_match": {:hex, :path_match, "0.1.0", "7969b7de9ff1c9d8b35565e65c35b58d0bb2f56a28144266323b25c9ac420059", [:mix], [], "hexpm"},
+  "poison": {:hex, :poison, "4.0.1", "bcb755a16fac91cad79bfe9fc3585bb07b9331e50cfe3420a24bcc2d735709ae", [:mix], [], "hexpm"},
   "resx": {:hex, :resx, "0.1.0", "525fea6ba8f2855006e6fe4ec9be1063a1ac2cc0b94a57043f892c353d8bc272", [:mix], [{:callback, "~> 0.1.0", [hex: :callback, repo: "hexpm", optional: false]}, {:mime, "~> 1.3", [hex: :mime, repo: "hexpm", optional: false]}, {:path_match, "~> 0.1.0", [hex: :path_match, repo: "hexpm", optional: false]}], "hexpm"},
   "simple_markdown": {:hex, :simple_markdown, "0.5.4", "e68b0c230f62e3dba126787597a20390095ad2c6eda9463605741b78a5e32d92", [:mix], [{:html_entities, "~> 0.3", [hex: :html_entities, repo: "hexpm", optional: false]}, {:parsey, "~> 0.0.3", [hex: :parsey, repo: "hexpm", optional: false]}], "hexpm"},
 }
