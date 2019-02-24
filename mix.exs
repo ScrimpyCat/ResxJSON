@@ -21,6 +21,7 @@ defmodule ResxJSON.MixProject do
     defp deps do
         [
             { :resx, "~> 0.1.0" },
+            { :callback, "~> 0.1.0" },
             { :jaxon, "~> 1.0" },
             { :poison, "~> 4.0" },
             { :ex_doc, "~> 0.18", only: :dev, runtime: false },
