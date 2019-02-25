@@ -53,7 +53,7 @@ defmodule ResxJSON.Encoder do
         if type =~ match do
             { [String.replace(type, match, Callback.call(replacement, [format]))|types], encoder }
         else
-            validate_type(type_list, matches)
+            validate_type(type_list, matches, format)
         end
     end
 end
