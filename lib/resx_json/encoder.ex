@@ -5,7 +5,7 @@ defmodule ResxJSON.Encoder do
 
     @impl Resx.Transformer
     def transform(resource = %{ content: content }, opts) do
-        case opts[:format] do
+        case opts[:format] || :json do
             :json ->
                 case validate_type(content.type, "json") do
                     { :ok, { type, encoder } } ->
