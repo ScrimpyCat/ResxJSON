@@ -35,6 +35,10 @@ defmodule ResxJSON.EncoderTest do
             assert ~S([1,2,3]) == (Resx.Resource.open!(~S(data:application/json,[1, 2, 3])) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
             assert ~S([]) == (Resx.Resource.open!(~S(data:application/json,[])) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
 
+            resource = %{ Resx.Resource.open!(~S(data:,{})) | content: %Resx.Resource.Content{ type: ["application/x.erlang.native"], data: [] }}
+            assert ~S([]) == (%{ resource | content: %{ resource.content | data: [] } } |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S([1,2,3]) != (%{ resource | content: %{ resource.content | data: [%Sequence{ nodes: [[1, 2, 3]] }] } } |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+
             resource = %{ Resx.Resource.open!(~S(data:,{})) | content: %Resx.Resource.Content.Stream{ type: ["application/x.erlang.native"], data: [] }}
             assert "" == (resource |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
             assert ~S([]) == (%{ resource | content: %{ resource.content | data: [array(), array(:end)] } } |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
