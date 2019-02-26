@@ -24,19 +24,17 @@ defmodule ResxJSON.Encoder do
     defp encode(%ResxJSON.Partial{ literal: literal, separator: separator, end: true }, _), do: { literal, { separator, false } }
     defp encode(%ResxJSON.Partial{ literal: literal, separator: separator }, _), do: { literal, { separator, true } }
     defp encode(%ResxJSON.Partial.Sequence{ nodes: nodes }, previous) do
-        Stream.transform(nodes, previous, fn
-            node, acc ->
-                { json, acc } = encode(node, acc)
-                { [json], acc }
-        end)
+        Enum.map_reduce(nodes, previous, &encode/2)
     end
     defp encode(data, { previous, _ }), do: { previous <> Poison.encode!(data), { ",", false } }
 
     def encode(data) do
         Stream.transform(data, { "", false }, fn
             node, acc ->
-                { json, acc } = encode(node, acc)
-                { [json], acc }
+                case encode(node, acc) do
+                    { json, acc } when is_list(json) -> { json, acc }
+                    { json, acc } -> { [json], acc }
+                end
         end)
     end
 
