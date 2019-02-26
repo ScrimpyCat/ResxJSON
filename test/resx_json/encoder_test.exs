@@ -1,5 +1,6 @@
 defmodule ResxJSON.EncoderTest do
     use ExUnit.Case
+    import ResxJSON.Partial
 
     test "media types" do
         assert ["application/json"] == (Resx.Resource.open!(~S(data:application/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
@@ -15,5 +16,31 @@ defmodule ResxJSON.EncoderTest do
         Application.put_env(:resx_json, :json_types, [{ "json/jsons", "foo", :json }])
         Application.put_env(:resx_json, :native_types, [{ "foo", &(&1), &(&1) }])
         assert ["json"] == (Resx.Resource.open!(~S(data:json/jsons,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
+    end
+
+    describe "json" do
+        test "encoding" do
+            assert ~S({}) == (Resx.Resource.open!(~S(data:application/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S({"b":"bar","a":"foo"}) == (Resx.Resource.open!(~S(data:application/json,{"a": "foo", "b": "bar"})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S({"b":2,"a":1}) == (Resx.Resource.open!(~S(data:application/json,{"a": 1, "b": 2})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S({"b":[4,5,6],"a":[1,2,3]}) == (Resx.Resource.open!(~S(data:application/json,{"a": [1, 2, 3], "b": [4, 5, 6]})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S({"b":{"y":4,"x":3},"a":{"y":2,"x":1}}) == (Resx.Resource.open!(~S(data:application/json,{"a": {"x": 1, "y": 2}, "b": {"x": 3, "y": 4}})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S("foo") == (Resx.Resource.open!(~S(data:application/json,"foo")) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S(1) == (Resx.Resource.open!(~S(data:application/json,1 )) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S([1,2,3]) == (Resx.Resource.open!(~S(data:application/json,[1, 2, 3])) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S([]) == (Resx.Resource.open!(~S(data:application/json,[])) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+
+            resource = %{ Resx.Resource.open!(~S(data:,{})) | content: %Resx.Resource.Content.Stream{ type: ["application/x.erlang.native"], data: [] }}
+            assert "" == (resource |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S([]) == (%{ resource | content: %{ resource.content | data: [array(), array(:end)] }} |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S({}) == (%{ resource | content: %{ resource.content | data: [object(), object(:end)] }} |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S(1) == (%{ resource | content: %{ resource.content | data: [1] }} |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S("foo") == (%{ resource | content: %{ resource.content | data: ["foo"] }} |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S({"foo":"bar"}) == (%{ resource | content: %{ resource.content | data: [%{ foo: "bar" }] }} |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S([1,2,3]) == (%{ resource | content: %{ resource.content | data: [[1, 2, 3]] }} |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S("foobar") == (%{ resource | content: %{ resource.content | data: [value("f"), value("oo"), value(["ba", "r"], :end)] }} |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S([1,2,"foo",3,[4],[5],6]) == (%{ resource | content: %{ resource.content | data: [array(), 1, 2, value("fo"), value("o", :end), 3, [4], array(), 5, array(:end), 6, array(:end)] }} |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+            assert ~S({"foobar":3,"a":"b","c":[{"foo":[1,2,3]}]}) == (%{ resource | content: %{ resource.content | data: [object(), key("f"), key("oo"), key(["ba", "r"], :end), 3, key("a", :end), value("b", :end), key("c", :end), array(), object(), key("foo", :end), [1, 2, 3], object(:end), array(:end), object(:end)] }} |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+        end
     end
 end
