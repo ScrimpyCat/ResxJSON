@@ -6,6 +6,6 @@ Installation
 
 ```elixir
 def deps do
-    [{ :resx_json, "~> 0.1.0" }]
+    [{ :resx_json, "~> 0.2.0" }]
 end
 ```
