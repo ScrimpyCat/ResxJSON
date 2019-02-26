@@ -11,7 +11,7 @@ defmodule ResxJSON.Decoder do
       `{ :invalid_reference, "invalid media type: \#{type}" }`, the MIME type
       will need to be added to the config.
 
-      To add additional media types to be decoded, the can be done by configuring
+      To add additional media types to be decoded, that can be done by configuring
       the `:json_types` option.
 
         config :resx_json,
