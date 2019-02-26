@@ -32,6 +32,17 @@ use Mix.Config
 if Mix.env == :dev do
     import_config "simple_markdown_rules.exs"
 
+    config :simple_markdown_extension_highlight_js,
+        source: Enum.at(Path.wildcard(Path.join(Mix.Project.deps_path(), "ex_doc/formatters/html/dist/*.js")), 0, ""),
+        include: ["json"]
+
+    config :ex_doc_simple_markdown, [
+        rules: fn rules ->
+            :ok = SimpleMarkdownExtensionHighlightJS.setup
+            rules
+        end
+    ]
+
     config :ex_doc, :markdown_processor, ExDocSimpleMarkdown
 end
 

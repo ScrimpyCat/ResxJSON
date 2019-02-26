@@ -26,6 +26,7 @@ defmodule ResxJSON.MixProject do
             { :poison, "~> 4.0" },
             { :ex_doc, "~> 0.18", only: :dev, runtime: false },
             { :simple_markdown, "~> 0.5.4", only: :dev, runtime: false },
+            { :simple_markdown_extension_highlight_js, "~> 0.1.0", only: :dev, runtime: false },
             { :ex_doc_simple_markdown, "~> 0.3", only: :dev, runtime: false }
         ]
     end
