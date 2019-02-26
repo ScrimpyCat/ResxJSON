@@ -9,6 +9,8 @@ defmodule ResxJSON.DecoderTest do
 
         assert ["json/x.erlang.native"] == (Resx.Resource.open!(~S(data:json/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
         assert ["json/x.erlang.native"] == (Resx.Resource.open!(~S(data:json/json+json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+
+        Application.put_env(:resx_json, :json_types, [])
         assert { :error, { :internal, "Invalid resource type" } } = (Resx.Resource.open!(~S(data:json/jsons,{})) |> Resx.Resource.transform(ResxJSON.Decoder))
         assert { :error, { :internal, "Invalid resource type" } } == (Resx.Resource.open!(~S(data:json/json+jsons,{})) |> Resx.Resource.transform(ResxJSON.Decoder))
 

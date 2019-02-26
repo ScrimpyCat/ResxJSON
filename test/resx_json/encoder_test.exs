@@ -12,6 +12,9 @@ defmodule ResxJSON.EncoderTest do
 
         assert ["json/json"] == (Resx.Resource.open!(~S(data:json/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
         assert ["json/json"] == (Resx.Resource.open!(~S(data:json/json+json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
+
+        Application.put_env(:resx_json, :json_types, [])
+        Application.put_env(:resx_json, :native_types, [])
         assert { :error, { :internal, "Invalid resource type" } } = (Resx.Resource.open!(~S(data:json/jsons,{})) |> Resx.Resource.transform(ResxJSON.Encoder))
         assert { :error, { :internal, "Invalid resource type" } } == (Resx.Resource.open!(~S(data:json/json+jsons,{})) |> Resx.Resource.transform(ResxJSON.Encoder))
 
