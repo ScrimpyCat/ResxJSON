@@ -23,6 +23,15 @@ defmodule ResxJSON.EncoderTest do
         assert ["json"] == (Resx.Resource.open!(~S(data:json/jsons,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
     end
 
+    test "codepoint encoding" do
+        resource = %{ Resx.Resource.open!(~S(data:,{})) | content: %Resx.Resource.Content.Stream{ type: ["application/x.erlang.native"], data: [] }}
+        assert ~S("é") == (%{ resource | content: %{ resource.content | data: [value(["e", "́"], :end)] } } |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+        assert ~S("🍕") == (%{ resource | content: %{ resource.content | data: [value(["\xf0\x9f\x8d\x95"], :end)] } } |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+        assert ~S("🍕") == (%{ resource | content: %{ resource.content | data: [value(["\xf0\x9f", "\x8d\x95"], :end)] } } |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+        assert %UnicodeConversionError{} = catch_error((%{ resource | content: %{ resource.content | data: [value(["\xf0\x9f"]), value(["\x8d\x95"], :end)] } } |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data)
+        assert ~S("é") = (%{ resource | content: %{ resource.content | data: [value(["e"]), value(["́"], :end)] } } |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data
+    end
+
     describe "json" do
         test "encoding" do
             assert ~S({}) == (Resx.Resource.open!(~S(data:application/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content |> Resx.Resource.Content.data

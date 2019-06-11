@@ -83,6 +83,17 @@ defmodule ResxJSON.Encoder do
         ]
     }
     ```
+
+      #### Codepoints
+      Values or keys must contain the full codepoint, partial codepoints (when
+      the bytes that make up a codepoint are split) may result in an error or
+      incorrect encoding.
+
+      e.g. A stream consisting of `[value(["\\xf0\\x9f"]), value(["\\x8d\\x95"], :end)]`
+      will raise an `UnicodeConversionError`, the intended character (`"🍕"`) must be
+      included in the same value partial: `value(["\\xf0\\x9f", "\\x8d\\x95"], :end)`.
+      However if you have two separate codepoints such as `[value(["e"]), value(["́"], :end)]`
+      then this will correctly produce the intended character (`"é"`).
     """
     use Resx.Transformer
 
