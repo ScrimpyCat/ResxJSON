@@ -6,6 +6,7 @@ defmodule ResxJSON.EncoderTest do
 
     test "media types" do
         assert ["application/json"] == (Resx.Resource.open!(~S(data:application/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
+        assert ["application/json; charset=utf-8"] == (Resx.Resource.open!(~S(data:application/json,{})) |> Map.replace!(:content, %Resx.Resource.Content{data: "{}", type: ["application/json; charset=utf-8"]}) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
         assert ["application/json"] == (Resx.Resource.open!(~S(data:application/json-seq,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
         assert ["application/geo+json"] == (Resx.Resource.open!(~S(data:application/geo+json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
         assert ["application/geo+json"] == (Resx.Resource.open!(~S(data:application/geo+json-seq,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
@@ -21,6 +22,7 @@ defmodule ResxJSON.EncoderTest do
         Application.put_env(:resx_json, :json_types, [{ "json/jsons", "foo", :json }])
         Application.put_env(:resx_json, :native_types, [{ "foo", &(&1), &(&1) }])
         assert ["json"] == (Resx.Resource.open!(~S(data:json/jsons,{})) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
+        assert ["json; charset=utf-8"] == (Resx.Resource.open!(~S(data:json/jsons,{})) |> Map.replace!(:content, %Resx.Resource.Content{data: "{}", type: ["json/jsons; charset=utf-8"]}) |> Resx.Resource.transform!(ResxJSON.Decoder) |> Resx.Resource.transform!(ResxJSON.Encoder)).content.type
     end
 
     test "codepoint encoding" do

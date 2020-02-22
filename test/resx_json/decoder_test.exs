@@ -3,6 +3,7 @@ defmodule ResxJSON.DecoderTest do
 
     test "media types" do
         assert ["application/x.erlang.native"] == (Resx.Resource.open!(~S(data:application/json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+        assert ["application/x.erlang.native; charset=utf-8"] == (Resx.Resource.open!(~S(data:application/json,{})) |> Map.replace!(:content, %Resx.Resource.Content{data: "{}", type: ["application/json; charset=utf-8"]}) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
         assert ["application/x.erlang.native"] == (Resx.Resource.open!(~S(data:application/json-seq,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
         assert ["application/geo+x.erlang.native"] == (Resx.Resource.open!(~S(data:application/geo+json,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
         assert ["application/geo+x.erlang.native"] == (Resx.Resource.open!(~S(data:application/geo+json-seq,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
@@ -16,6 +17,7 @@ defmodule ResxJSON.DecoderTest do
 
         Application.put_env(:resx_json, :json_types, [{ "json/jsons", "foo", :json }])
         assert ["foo"] == (Resx.Resource.open!(~S(data:json/jsons,{})) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
+        assert ["foo; charset=utf-8"] == (Resx.Resource.open!(~S(data:json/jsons,{})) |> Map.replace!(:content, %Resx.Resource.Content{data: "{}", type: ["json/jsons; charset=utf-8"]}) |> Resx.Resource.transform!(ResxJSON.Decoder)).content.type
     end
 
     describe "json" do
