@@ -96,7 +96,7 @@ defmodule ResxJSON.Decoder do
 
     @default_json_types [
         { ~r/\/(json(\+json)?|(.*?\+)json)(;|$)/, "/\\3x.erlang.native\\4", :json },
-        { ~r/\/(json-seq?|(.*?\+)json-seq)(;|$)/, "/\\2x.erlang.native\\3", :json_seq }
+        { ~r/\/(json-seq|(.*?\+)json-seq)(;|$)/, "/\\2x.erlang.native\\3", :json_seq }
     ]
     defp validate_type(types) do
         cond do
